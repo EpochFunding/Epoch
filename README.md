@@ -5,7 +5,7 @@
 **Perpetual funding rate tracker for Solana.**
 Monitors Drift every 5 minutes. Flags extreme rates and tells you exactly how to profit from them.
 
-[![Build](https://img.shields.io/github/actions/workflow/status/EpochFunding/Epoch/ci.yml?branch=main&style=flat-square&label=Build)](https://github.com/EpochFunding/Epoch/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/EpochFunding/Epoch/ci.yml?branch=master&style=flat-square&label=Build)](https://github.com/EpochFunding/Epoch/actions)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
 [![Built with Claude Agent SDK](https://img.shields.io/badge/Built%20with-Claude%20Agent%20SDK-2dd4bf?style=flat-square)](https://docs.anthropic.com/en/docs/agents-and-tools/claude-agent-sdk)
 

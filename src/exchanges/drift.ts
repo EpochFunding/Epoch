@@ -1,5 +1,5 @@
 import type { FundingRate, FundingDirection } from "../lib/types.js";
-import { DRIFT_API } from "../lib/config.js";
+import { config, DRIFT_API } from "../lib/config.js";
 
 interface DriftMarket {
   marketIndex: number;
@@ -23,8 +23,12 @@ export async function fetchDriftFundingRates(): Promise<FundingRate[]> {
 
   const data = await res.json() as { markets: DriftMarket[] };
   const rates: FundingRate[] = [];
+  const trackedMarkets = new Set(
+    config.TRACKED_MARKETS.split(",").map((market: string) => market.trim()).filter(Boolean)
+  );
 
   for (const market of data.markets ?? []) {
+    if (!trackedMarkets.has(market.name)) continue;
     const hourlyRate = parseFloat(market.fundingRate1h ?? "0") / 1e9;
     if (isNaN(hourlyRate)) continue;
 

@@ -24,7 +24,7 @@ export interface FundingHistory {
 
 export interface FundingAlert {
   id: string;
-  type: "extreme_positive" | "extreme_negative" | "flip" | "divergence";
+  type: "extreme_positive" | "extreme_negative" | "flip";
   market: string;
   exchange: Exchange;
   currentRate: number;

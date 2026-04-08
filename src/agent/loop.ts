@@ -1,9 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
-import type { FundingRate, FundingAlert } from "../lib/types.js";
+import type { FundingRate, FundingAlert, Exchange } from "../lib/types.js";
 import { EPOCH_SYSTEM } from "./prompts.js";
 import { config } from "../lib/config.js";
 import { log } from "../lib/logger.js";
-import { getHistory } from "../analysis/history.js";
+import { crossedZeroRecently, getHistory } from "../analysis/history.js";
 import crypto from "crypto";
 
 const client = new Anthropic({ apiKey: config.ANTHROPIC_API_KEY });
@@ -37,7 +37,7 @@ const tools: Anthropic.Tool[] = [
     input_schema: {
       type: "object" as const,
       properties: {
-        type: { type: "string", enum: ["extreme_positive", "extreme_negative", "flip", "divergence"] },
+        type: { type: "string", enum: ["extreme_positive", "extreme_negative", "flip"] },
         market: { type: "string" },
         exchange: { type: "string" },
         current_rate: { type: "number" },
@@ -95,6 +95,7 @@ export async function runEpochAgent(rates: FundingRate[], extremes: FundingRate[
           ...h,
           avgAnnualized: (h.avgRate * 24 * 365 * 100).toFixed(1) + "%",
           sampleCount: h.samples.length,
+          crossedZeroRecently: crossedZeroRecently(input.exchange as string, input.market as string),
         });
       } else if (block.name === "get_extremes") {
         result = JSON.stringify(extremes.map((r) => ({
@@ -111,7 +112,7 @@ export async function runEpochAgent(rates: FundingRate[], extremes: FundingRate[
           id: crypto.randomUUID(),
           type: input.type as FundingAlert["type"],
           market: input.market as string,
-          exchange: input.exchange as string,
+          exchange: input.exchange as Exchange,
           currentRate: input.current_rate as number,
           annualizedRate: input.annualized_rate as number,
           message: input.message as string,
