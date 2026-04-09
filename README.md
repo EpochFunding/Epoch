@@ -13,15 +13,31 @@ Epoch tracks funding regime changes, catches extreme annualized rates, and expla
 
 ---
 
-Funding is one of the cleanest windows into crowded positioning. When annualized rates get extreme, the market is telling you that one side of the trade is paying too much to stay in control. Epoch turns that signal into an actual monitoring product.
+Funding is one of the cleanest ways to see when positioning stops being balanced. When annualized rates stretch, the market is telling you that one side is paying too much to stay crowded.
 
-It follows tracked perpetual markets, keeps rolling history, and emits alerts only when the current funding state crosses a threshold that matters. The point is not to print every rate update. The point is to surface the moments when funding becomes a real opportunity or a real warning.
+Epoch turns that state into a readable monitor. It tracks the perp markets that matter, keeps enough history to tell whether the move is persistent or temporary, and only elevates the moments when funding becomes useful as a carry signal, a crowding warning, or a sentiment shift.
 
 `FETCH -> STORE HISTORY -> TEST EXTREMES -> CLASSIFY -> ALERT`
 
 ---
 
-Rate Board - Funding Alert - At a Glance - Operating Surfaces - How It Works - Example Output - Alert Types - Risk Controls - Quick Start
+Rate Board • Funding Alert • Why Funding Matters • At a Glance • Regime Guide • What Epoch Watches • How To Read A Funding Alert • Example Output • Alert Types • Risk Controls • Quick Start
+
+## Rate Board
+
+![Epoch Rates](assets/preview-rates.svg)
+
+## Funding Alert
+
+![Epoch Alert](assets/preview-alert.svg)
+
+## Why Funding Matters
+
+Price tells you where the market moved. Funding tells you what traders are paying to stay on one side of that move.
+
+That difference is why funding deserves its own monitor. When annualized rates get extreme, the setup often stops being a simple directional story and starts becoming a crowding story. That can create carry, fragility, reversal pressure, or all three at once.
+
+Epoch is built for that layer. It does not try to be a full perp dashboard. It is much narrower than that. It is designed to tell you when funding stopped being background noise and became information worth acting on.
 
 ## At a Glance
 
@@ -30,26 +46,30 @@ Rate Board - Funding Alert - At a Glance - Operating Surfaces - How It Works - E
 - `Primary failure mode`: reacting to a headline rate without context on persistence or recent flips
 - `Best for`: operators looking for carry setups, crowding signals, or sentiment shifts in perp markets
 
-## Rate Chart
+## The Funding Regime Guide
 
-![Epoch Rates](assets/preview-rates.svg)
+Epoch becomes more useful when the user stops thinking in one-off prints and starts thinking in states.
 
-## Funding Alert
+| State | What it means | Why it matters |
+|-------|---------------|----------------|
+| `calm` | funding is near neutral | no edge yet, stay observant |
+| `rich positive` | longs are paying meaningful premium | carry may be forming, crowding risk building |
+| `rich negative` | shorts are paying meaningful premium | panic or forced shorting may be getting expensive |
+| `flip` | funding crossed through zero with history support | positioning regime changed |
+| `persistent extreme` | the same side stayed expensive across windows | the market is paying to stay crowded |
 
-![Epoch Alert](assets/preview-alert.svg)
+The point of the board is not merely to rank the biggest number. It is to decide which state the market entered and what that implies.
 
-## Operating Surfaces
+## What Epoch Watches That Most Funding Boards Do Not
 
-- `Rate Board`: shows which markets are calm, stretched, or already dislocated
-- `History Window`: gives the current rate a trailing context instead of treating every print in isolation
-- `Extreme Detector`: flags markets that crossed configured annualized thresholds
-- `Alert Layer`: explains whether the move looks like paid carry, crowded leverage, or a sentiment flip worth tracking
+Most boards stop at "the rate is high." Epoch is built to answer the next questions:
 
-## Why Epoch Exists
+- is the rate high enough to matter
+- has it stayed high long enough to become useful
+- did the market recently flip from one side paying to the other
+- does the move look like clean carry, unstable crowding, or a sentiment transition
 
-Funding dashboards already exist. Most of them leave the operator with the same problem as raw price alerts: a number with no ranking and no interpretation. A +90% annualized funding print is not useful if the system cannot tell you whether it is a persistent carry opportunity, a blow-off condition, or a one-off distortion that already reverted.
-
-Epoch exists to make funding operational. It watches the markets that matter, keeps enough history to identify regime shifts, and only emits alerts when the rate structure is strong enough to deserve attention.
+That extra layer is what makes the product feel like a monitor instead of a spreadsheet.
 
 ## How It Works
 
@@ -58,21 +78,35 @@ Epoch follows a narrow loop:
 1. fetch current funding rates for the tracked perp markets
 2. append the latest samples to rolling market history
 3. compare the current rate against configured extreme thresholds
-4. detect sign flips when the recent history actually crossed through zero
-5. write an alert that frames the market as carry, stress, or changing sentiment
+4. detect sign flips only when the recent history actually crossed through zero
+5. frame the alert as carry, stress, or changing sentiment
 
-The system is intentionally selective. A funding board that shouts every five minutes is not a signal product. It is just noise with percentages.
+The system should be selective. A board that screams at every update teaches the user to ignore the one update that mattered.
 
-## What A Useful Funding Alert Looks Like
+## How To Read A Funding Alert
 
-A useful Epoch alert is not "SOL-PERP funding is positive." It is a more precise claim:
+There are four questions that matter more than the absolute number:
 
-- longs are paying an unusually high premium to stay positioned
-- the rate has been elevated long enough to matter
-- the move either still offers carry or is starting to look structurally crowded
-- the market recently flipped sign, which changes how positioning should be read
+1. who is paying whom
+2. how expensive that payment became on an annualized basis
+3. whether the rate is stabilizing, accelerating, or reverting
+4. whether the recent history supports a real regime change
 
-That is the difference between a tracker and a monitor.
+That is why Epoch keeps a history window. Without context, a high print can look more meaningful than it really is.
+
+## Where Epoch Actually Helps
+
+### Carry Setups
+
+Sometimes the cleanest use of funding is simple: one side is paying too much, long enough, and the operator wants to know when the premium is worth attention.
+
+### Crowding Warnings
+
+The market can remain expensive for longer than expected, but extreme persistence still matters. It tells you positioning is stretched.
+
+### Sentiment Transitions
+
+Funding flips often reveal a change in posture before a narrative catches up. That is especially useful when a market stops trending smoothly and starts repricing participants.
 
 ## Example Output
 
@@ -97,14 +131,14 @@ but crowding risk is elevated if the move persists.
 | `extreme_negative` | funding is unusually expensive on the short side | long-bias carry or panic unwind |
 | `flip` | funding crossed through zero in recent history | positioning regime changed |
 
-## How Operators Usually Read Epoch
+## What A Good Epoch Signal Looks Like
 
-There are two common ways to use the board:
+- the annualized rate is materially stretched
+- the history window supports persistence or a real flip
+- the alert explains whether the edge is carry, crowding, or transition
+- the confidence is high enough that the print deserves attention now
 
-1. as a carry monitor, where the goal is to know when one side is paying an unusually high premium
-2. as a positioning monitor, where the goal is to know when sentiment has become lopsided enough to matter for direction
-
-Epoch supports both, but it works best when the operator already knows which of those jobs matters more.
+That sounds basic, but it is the difference between a useful market monitor and a noisy percentage feed.
 
 ## Risk Controls
 
@@ -135,6 +169,13 @@ ALERT_MIN_CONFIDENCE=0.65
 HISTORY_WINDOW_HOURS=24
 TRACKED_MARKETS=SOL-PERP,BTC-PERP,ETH-PERP,JTO-PERP,JUP-PERP
 ```
+
+## Support Docs
+
+- [Runbook](docs/runbook.md)
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
 
 ## License
 
