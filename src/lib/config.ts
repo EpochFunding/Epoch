@@ -2,6 +2,9 @@ import { z } from "zod";
 import dotenv from "dotenv";
 dotenv.config();
 
+
+const TEST_ENV = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
+
 const schema = z.object({
   ANTHROPIC_API_KEY: z.string().min(1),
   CLAUDE_MODEL: z.string().default("claude-sonnet-4-6"),
@@ -12,7 +15,13 @@ const schema = z.object({
   TRACKED_MARKETS: z.string().default("SOL-PERP,BTC-PERP,ETH-PERP,JTO-PERP,JUP-PERP"),
 });
 
-const parsed = schema.safeParse(process.env);
+const env = TEST_ENV
+  ? {
+      ANTHROPIC_API_KEY: "test-anthropic-key",
+      ...process.env,
+    }
+  : process.env;
+const parsed = schema.safeParse(env);
 if (!parsed.success) {
   console.error("Config error:", parsed.error.flatten().fieldErrors);
   process.exit(1);
