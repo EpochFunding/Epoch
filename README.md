@@ -21,15 +21,7 @@ Epoch turns that state into a readable monitor. It tracks the perp markets that 
 
 ---
 
-Rate Board • Funding Alert • Why Funding Matters • At a Glance • Regime Guide • What Epoch Watches • How To Read A Funding Alert • Example Output • Alert Types • Risk Controls • Quick Start
-
-## Rate Board
-
-![Epoch Rates](assets/preview-rates.svg)
-
-## Funding Alert
-
-![Epoch Alert](assets/preview-alert.svg)
+Why Funding Matters • At a Glance • Regime Guide • What Epoch Watches • How To Read A Funding Alert • Example Output • Alert Types • Risk Controls • Quick Start
 
 ## Why Funding Matters
 
